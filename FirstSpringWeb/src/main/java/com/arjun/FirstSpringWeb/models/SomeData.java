@@ -34,4 +34,13 @@ public class SomeData {
     public void setVal3(int val3) {
         this.val3 = val3;
     }
+
+    @Override
+    public String toString() {
+        return "SomeData{" +
+                "val1=" + val1 +
+                ", val2=" + val2 +
+                ", val3=" + val3 +
+                '}';
+    }
 }
