@@ -1,48 +1,35 @@
 package com.arjun.FirstSpringWeb.services;
 
 import com.arjun.FirstSpringWeb.models.SomeData;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import com.arjun.FirstSpringWeb.repository.HomeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class HomeService {
-    List<SomeData> someDataList = new ArrayList<>(List.of(
-            new SomeData(1, 4, 5), new SomeData(2, 4, 6), new SomeData(4, 4, 5)
-    ));
+
+    @Autowired
+    private HomeRepository homeRepository;
 
     public List<SomeData> getSomeData() {
-        return someDataList;
+        return homeRepository.findAll();
     }
 
     public SomeData getSomeDataByVal1(int val1) {
-        try {
-            return someDataList.stream().filter( someData ->
-                    someData.getVal1() == val1
-            ).findFirst().get();
-        } catch (NoSuchElementException exp) {
-            return null;
-        }
+        return homeRepository.findById(val1).orElse(new SomeData());
     }
 
     public SomeData addSomeData(SomeData givenSomeData, Integer val2) {
         if(val2 != null) givenSomeData.setVal2(val2);
-        someDataList.add(givenSomeData);
+        homeRepository.save(givenSomeData);
         return givenSomeData;
     }
 
     public String updateSomeData(SomeData givenSomeDataToUpdate) {
         try {
-            int indexToUpdate = -1;
-            for (int i = 0 ; i < someDataList.size() ; i++) {
-                if (someDataList.get(i).getVal1() == givenSomeDataToUpdate.getVal1()) {
-                    indexToUpdate = i; break;
-                }
-            }
-
-            someDataList.set(indexToUpdate, givenSomeDataToUpdate);
+            homeRepository.save(givenSomeDataToUpdate);
             return "SomeData updated";
         } catch (Exception exception) {
             if (exception instanceof IndexOutOfBoundsException) return "Item not found";
@@ -50,16 +37,9 @@ public class HomeService {
         }
     }
 
-    public String deleteSomeData(SomeData givenSomeDataToUpdate) {
+    public String deleteSomeData(SomeData givenSomeDataToDelete) {
         try {
-            int indexToDelete = -1;
-            for (int i = 0 ; i < someDataList.size() ; i++) {
-                if (someDataList.get(i).getVal1() == givenSomeDataToUpdate.getVal1()) {
-                    indexToDelete = i; break;
-                }
-            }
-
-            someDataList.remove(indexToDelete);
+            homeRepository.delete(givenSomeDataToDelete);
             return "SomeData Deleted";
         } catch (Exception exception) {
             if (exception instanceof IndexOutOfBoundsException) return "Item not found";

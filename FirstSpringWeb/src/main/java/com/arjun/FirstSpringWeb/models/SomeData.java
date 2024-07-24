@@ -1,7 +1,13 @@
 package com.arjun.FirstSpringWeb.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class SomeData {
-    private int val1; private int val2; private int val3;
+    @Id
+    private int val1;
+    private int val2; private int val3;
 
     public SomeData() {}
 
